@@ -23,10 +23,6 @@
 	@use "../../styles/exports.scss" as exports;
 
 	nav {
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
 		height: 6rem;
 		background-color: exports.$color-dark-800;
 

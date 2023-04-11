@@ -3,7 +3,7 @@
 	type BuzzerState = "buzzed" | "unbuzzed" | "disabled";
 
 	// TODO: make this default to disabled
-	let buzzerState: BuzzerState = "disabled";
+	export let buzzerState: BuzzerState = "disabled";
 
 	const dispatch = createEventDispatcher();
 

@@ -16,7 +16,6 @@
 
 		background-color: exports.$color-primary;
 
-		display: grid;
-		place-items: center;
+		min-height: calc(100vh + 6rem);
 	}
 </style>
