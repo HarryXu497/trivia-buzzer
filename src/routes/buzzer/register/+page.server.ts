@@ -25,7 +25,7 @@ export const actions = {
 			team: teamName || null,
 			timeBuzzed: null,
 		})
-
+		
 		throw redirect(303, `/buzzer/?roomCode=${roomCode.toUpperCase()}`)
 	}
 } satisfies Actions;

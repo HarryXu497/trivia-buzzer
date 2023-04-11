@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ActionData } from "./$types";
-	import { enhance } from "$app/forms";
+	import { applyAction, enhance } from "$app/forms";
 	import Input from "$lib/components/Input.svelte";
 
 	export let form: ActionData;
@@ -15,6 +15,15 @@
 <form method="POST" use:enhance={({ data }) => {
 	data.set("player-name", formControls.playerName);
 	data.set("team-name", formControls.teamName);
+
+	return async ({ result }) => {
+		if (result.type === 'redirect') {
+			localStorage.setItem("playerName", formControls.playerName)
+			localStorage.setItem("teamName", formControls.teamName)
+		}
+
+		await applyAction(result)
+	}
 }}>
 	<Input label="Player Name" errorMessage={form?.missingPlayerName ? "Missing player name." : null} bind:value={formControls.playerName}/>
 	<Input label="Team Name" errorMessage={form?.missingTeamName ? "Missing team name." : null} bind:value={formControls.teamName}/>
