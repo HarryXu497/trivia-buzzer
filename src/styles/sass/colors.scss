@@ -1,0 +1,33 @@
+
+$color-primary-100: hsl(359, 42%, 55%);
+$color-primary-200: hsl(359, 42%, 52%);
+$color-primary-300: hsl(359, 42%, 37%);
+$color-primary-400: hsl(359, 42%, 32%);
+$color-primary-500: hsl(359, 42%, 27%);
+$color-primary-600: hsl(359, 42%, 22%);
+$color-primary-700: hsl(359, 42%, 17%);
+$color-primary-800: hsl(359, 42%, 12%);
+
+$color-primary: $color-primary-500;
+
+$color-dark-100: hsl(0, 0%, 35%);
+$color-dark-200: hsl(0, 0%, 30%);
+$color-dark-300: hsl(0, 0%, 25%);
+$color-dark-400: hsl(0, 0%, 20%);
+$color-dark-500: hsl(0, 0%, 12%);
+$color-dark-600: hsl(0, 0%, 10%);
+$color-dark-700: hsl(0, 0%, 5%);
+$color-dark-800: hsl(0, 0%, 0%);
+
+$color-light: $color-dark-800;
+
+$color-light-100: hsl(0, 0%, 100%);
+$color-light-200: hsl(0, 0%, 95%);
+$color-light-300: hsl(0, 0%,  90%);
+$color-light-400: hsl(0, 0%, 85%);
+$color-light-500: hsl(0, 0%, 80%);
+$color-light-600: hsl(0, 0%, 75%);
+$color-light-700: hsl(0, 0%, 70%);
+$color-light-800: hsl(0, 0%, 65%);
+
+$color-light: $color-light-100;
