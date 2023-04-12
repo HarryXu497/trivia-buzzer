@@ -25,15 +25,12 @@ export const actions = {
 			}
 		}
 
-		console.log(codeToWord(gameId.split("") as Code))
-
 		await setDoc(
 			doc(firestore, "games", gameId),
 			{
 				name: gameTitle,
 			}
 		)
-
 
 
 		throw redirect(303, `/buzzer/host?roomCode=${gameId}`)

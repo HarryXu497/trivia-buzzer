@@ -21,26 +21,35 @@
 
 </script>
 
-<form method="POST" use:enhance={({ data }) => {
-	data.set("game-code", inputValue);
-}}>
-	<Input
-		label="Game Code"
-		maxlength="4"
-		bind:value={inputValue}
-		{errorMessage}
-	/>
-	<button class="join-button">Join Game <span>&#x21B3;</span></button>
-</form>
+<div>
+	<form method="POST" use:enhance={({ data }) => {
+		data.set("game-code", inputValue);
+	}}>
+		<Input
+			label="Game Code"
+			maxlength="4"
+			bind:value={inputValue}
+			{errorMessage}
+		/>
+		<button class="join-button">Join Game <span>&#x21B3;</span></button>
+	</form>
+</div>
 
 <style lang="scss">
 	@use "../styles/exports.scss" as exports;
+
+	div {
+		display: grid;
+		place-items: center;
+		height: 100%;
+	}
 
 	form {
 		font-family: exports.$font-sans-serif;
 		display: flex;
 		flex-direction: column;
 		gap: 0.75rem;
+		margin-bottom: 8rem;;
 	}
 
 	button.join-button {

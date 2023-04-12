@@ -66,6 +66,10 @@
 			background-color: $color-gray;
 		}
 
+		&:hover {
+			cursor: pointer;
+		}
+
 	}
 
 </style>

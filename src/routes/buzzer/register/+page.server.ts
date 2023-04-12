@@ -20,12 +20,20 @@ export const actions = {
 
 		const collectionReference = collection(firestore, "games", roomCode, "players");
 
-		await addDoc(collectionReference, {
+		const ref = await addDoc(collectionReference, {
 			name: playerName || null,
 			team: teamName || null,
 			timeBuzzed: null,
+			disabled: true,
 		})
-		
-		throw redirect(303, `/buzzer/?roomCode=${roomCode.toUpperCase()}`)
+
+		return {
+			type: 'success',
+			status: 200,
+			data: {
+				url: `/buzzer/?roomCode=${roomCode.toUpperCase()}`,
+				playerId: ref.id,
+			}
+		}
 	}
 } satisfies Actions;

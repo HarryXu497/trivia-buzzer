@@ -1,25 +1,70 @@
 <script lang="ts">
+	export const ssr = false;
+
+	import { page } from "$app/stores";
 	import Buzzer from "$lib/components/Buzzer.svelte";
-	import { onSnapshot } from "firebase/firestore";
-	import type { PageServerData } from "./$types";
+	import firestore from "$lib/firebase/firebase";
+	import { doc, getDoc, onSnapshot, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+	import { onMount } from "svelte";
 	type BuzzerState = "buzzed" | "unbuzzed" | "disabled";
 
-	function onClick() {
-		console.log("Clicked")
-	}
+	async function onClick() {
+		if (!document) {
+			return;
+		}
 
-	export let data: PageServerData;
+		await updateDoc(document, {
+			timeBuzzed: serverTimestamp(),
+		})
+	}
+	
 
 	let state: BuzzerState = 'disabled';
+	let document: ReturnType<typeof doc>;
 
-	onSnapshot(data.document, (snapshot) => {
+
+	onMount(async () => {
+		state = 'disabled';
+
+		const playerId = localStorage.getItem("playerId");
+
 		
+		if ($page.url.searchParams.has("roomCode") && playerId) {
+			const roomCode = $page.url.searchParams.get("roomCode")!;
+
+			document = doc(firestore, "games", roomCode, "players", playerId);
+		
+			if (document) {
+				onSnapshot(document, async (snapshot) => {
+					const data = snapshot.data()!;
+
+					if ("disabled" in data) {
+						if (data.disabled) {
+							state = 'disabled';
+							await updateDoc(document, {
+								timeBuzzed: null,
+							})
+						}
+						if (!data.disabled) {
+							if (data.timeBuzzed) {
+								state = 'buzzed'
+							} else {
+								state = 'unbuzzed'
+							}
+						}
+					} else {
+						state = 'disabled';
+					}
+				})
+			}
+		}
 	})
+
 	
 </script>
 
 <div>
-	<Buzzer on:click={onClick}/>
+	<Buzzer on:click={onClick} bind:buzzerState={state}/>
 </div>
 
 <style lang="scss">
@@ -29,6 +74,6 @@
 		display: grid;
 		place-items: center;
 
-		margin-top: 3rem;
+		height: calc(100% - 6rem);
 	}
 </style>
