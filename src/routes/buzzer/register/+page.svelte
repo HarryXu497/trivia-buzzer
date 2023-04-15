@@ -6,11 +6,19 @@
 
 	export let form: ActionData;
 
-	$: console.log(form?.data?.playerId)
-
 	let formControls = {
 		playerName: "",
 		teamName: "",
+	}
+
+	$: {
+		if (form?.data?.playerId) {
+			localStorage.setItem("playerId", form.data.playerId);
+		}
+
+		if (form?.data?.url) {
+			goto(form?.data?.url);
+		}
 	}
 
 </script>
@@ -22,16 +30,13 @@
 	
 		return async ({ result }) => {
 			if (result.type === 'success') {
+
 				if (form?.data?.playerId) {
-					localStorage.setItem("playerId", form?.data?.playerId);
+					localStorage.setItem("playerId", form.data.playerId);
 				}
 
 				localStorage.setItem("playerName", formControls.playerName);
 				localStorage.setItem("teamName", formControls.teamName);
-
-				if (form?.data?.url) {
-					goto(form?.data?.url);
-				}
 			}
 	
 			await applyAction(result)
@@ -40,7 +45,7 @@
 		<Input label="Player Name" errorMessage={form?.missingPlayerName ? "Missing player name." : null} bind:value={formControls.playerName}/>
 		<Input label="Team Name" errorMessage={form?.missingTeamName ? "Missing team name." : null} bind:value={formControls.teamName}/>
 	
-		<button class="enter-button">Enter Game <span>&#x21B3;</span></button>
+		<button class="enter-button" type="submit">Enter Game <span>&#x21B3;</span></button>
 	</form>
 </section>
 

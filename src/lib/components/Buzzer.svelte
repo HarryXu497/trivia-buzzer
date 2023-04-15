@@ -2,16 +2,22 @@
 	import { createEventDispatcher } from "svelte";
 	type BuzzerState = "buzzed" | "unbuzzed" | "disabled";
 
-	// TODO: make this default to disabled
 	export let buzzerState: BuzzerState = "disabled";
+	// buzz the buzzer even if db is not update to enchance user experience
+	export let showBuzzed: boolean = false;
+
+	$: {
+		if (buzzerState !== 'buzzed') {
+			showBuzzed = false;
+		}
+	}
 
 	const dispatch = createEventDispatcher();
 
 	function forwardClick(event: Event) {
-		if (buzzerState === "unbuzzed") {
-			buzzerState = "buzzed";
-		}
+		showBuzzed = !showBuzzed;
 		dispatch("click", event)
+
 	}
 </script>
 
@@ -19,15 +25,18 @@
 	on:click={forwardClick}
 	{...$$restProps}
 	class:unbuzzed={buzzerState === "unbuzzed"}
-	class:buzzed={buzzerState === "buzzed"}
+	class:buzzed={buzzerState === "buzzed" || showBuzzed}
 	class:disabled={buzzerState === "disabled"}
 	disabled={buzzerState === "disabled"}
 >
-	{#if buzzerState === "unbuzzed"}
+	{#if buzzerState === "unbuzzed" && !showBuzzed}
 		BUZZ
-	{:else if buzzerState === "buzzed"}
+	{/if}
+	{#if buzzerState === "buzzed" || showBuzzed}
 		BUZZED
-	{:else if buzzerState === "disabled"}
+	{/if}
+
+	{#if buzzerState === "disabled"}
 		DISABLED
 	{/if}
 </button>

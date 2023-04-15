@@ -13,15 +13,27 @@
 			return;
 		}
 
+		
+		if (state === 'disabled') {
+			return;
+		}
+		
+		if (state === 'buzzed') {
+			return;
+		}
+		
+
 		await updateDoc(document, {
 			timeBuzzed: serverTimestamp(),
 		})
 	}
+
+	$: console.log("STATE: " + state)
 	
 
 	let state: BuzzerState = 'disabled';
 	let document: ReturnType<typeof doc>;
-
+	let showBuzzed: boolean = false;
 
 	onMount(async () => {
 		state = 'disabled';
@@ -33,30 +45,27 @@
 			const roomCode = $page.url.searchParams.get("roomCode")!;
 
 			document = doc(firestore, "games", roomCode, "players", playerId);
-		
-			if (document) {
-				onSnapshot(document, async (snapshot) => {
-					const data = snapshot.data()!;
+			
+			onSnapshot(document, async (snapshot) => {
+				const data = snapshot.data()!;
+			
+				if (data.disabled) {
+					state = 'disabled';
+					return;
+				}
+				
+				if (data.timeBuzzed) {
+					state = 'buzzed';
+					return;
+				}
 
-					if ("disabled" in data) {
-						if (data.disabled) {
-							state = 'disabled';
-							await updateDoc(document, {
-								timeBuzzed: null,
-							})
-						}
-						if (!data.disabled) {
-							if (data.timeBuzzed) {
-								state = 'buzzed'
-							} else {
-								state = 'unbuzzed'
-							}
-						}
-					} else {
-						state = 'disabled';
-					}
-				})
-			}
+				if (!data.timeBuzzed) {
+					state = 'unbuzzed';
+					return;
+				}
+				
+			})
+			
 		}
 	})
 
@@ -64,7 +73,7 @@
 </script>
 
 <div>
-	<Buzzer on:click={onClick} bind:buzzerState={state}/>
+	<Buzzer on:click={onClick} bind:buzzerState={state} showBuzzed={showBuzzed}/>
 </div>
 
 <style lang="scss">

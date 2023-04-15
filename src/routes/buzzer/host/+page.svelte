@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from "$app/stores";
-	import Buzzer from "$lib/components/Buzzer.svelte";
+	import Switch from "$lib/components/Switch.svelte";
 	import firestore from "$lib/firebase/firebase";
-	import { collection, doc, getDocs, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
+	import { collection, getDocs, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
 	import { onMount } from "svelte";
 
 	interface Buzzer {
@@ -10,7 +10,7 @@
 		team: string;
 	}
 
-	async function onCheck(event: Event) {
+	async function onInput(event: Event) {
 		if (!$page.url.searchParams.has("roomCode")) {
 			return;
 		}
@@ -21,9 +21,13 @@
 		const players = collection(firestore, "games", $page.url.searchParams.get("roomCode")!, "players");
 		const documents = await getDocs(players);
 
-		documents.forEach(document => {
-			updateDoc(document.ref, {
-				disabled: isChecked
+		documents.forEach(async document => {
+
+			const data = document.data();
+
+			await updateDoc(document.ref, {
+				disabled: isChecked,
+				timeBuzzed: isChecked ? null : data.timeBuzzed,
 			})
 		})
 	}
@@ -48,7 +52,7 @@
 </script>
 
 <section>
-	Disable All Buzzers: <input type="checkbox" on:input={onCheck}>
+	Disable All Buzzers: <Switch on:input={onInput}/>
 
 	<section class="buzzer-table">
 		<div class="buzzer-header">
