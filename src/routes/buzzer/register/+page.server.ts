@@ -24,7 +24,7 @@ export const actions = {
 			name: playerName || null,
 			team: teamName || null,
 			timeBuzzed: null,
-			disabled: true,
+			disabled: false,
 		})
 
 		return {

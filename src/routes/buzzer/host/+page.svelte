@@ -5,9 +5,24 @@
 	import { collection, getDocs, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
 	import { onMount } from "svelte";
 
+	interface FirebaseTimeStamp {
+		seconds : number,
+		nanoseconds : number
+	} 
+
 	interface Buzzer {
 		name: string;
 		team: string;
+		disabled: boolean;
+		timeBuzzed: FirebaseTimeStamp
+	}
+
+	function calculateTimeDifference(first: FirebaseTimeStamp, second: FirebaseTimeStamp) {
+		const secondDifference = first.seconds - second.seconds;
+		const nanosecondsDifference = first.nanoseconds - second.nanoseconds;
+
+
+		return (secondDifference * 1e3) + (nanosecondsDifference / 1e6)
 	}
 
 	async function onInput(event: Event) {
@@ -16,7 +31,7 @@
 		}
 		
 		const target = event.target as HTMLInputElement;
-		const isChecked = target.checked; 
+		const isChecked = !target.checked; 
 
 		const players = collection(firestore, "games", $page.url.searchParams.get("roomCode")!, "players");
 		const documents = await getDocs(players);
@@ -33,6 +48,7 @@
 	}
 
 	let buzzers: Buzzer[] = [];
+	$: firstBuzzerTime = buzzers.length ? buzzers[0].timeBuzzed : null;
 
 	onMount(() => {
 		if ($page.url.searchParams.has("roomCode")) {
@@ -46,23 +62,35 @@
 				buzzers = snapshot.docs
 					.map(v => v.data())
 					.filter(data => data.timeBuzzed) as Buzzer[];
+				
+				console.log(buzzers)
 			})
 		}
 	})
 </script>
 
 <section>
-	Disable All Buzzers: <Switch on:input={onInput}/>
+	<p class="switch">Buzzers are currently <Switch on:input={onInput}/></p>
+
 
 	<section class="buzzer-table">
 		<div class="buzzer-header">
 			<p class="team">Team</p>
 			<p class="name">Name</p>
+			<p class="time">Time</p>
 		</div>
+		{#if !buzzers.length}
+		<div class="buzzer-row placeholder">
+			<p class="team"></p>
+			<p class="name"></p>
+			<p class="time"></p>
+		</div>
+		{/if}
 		{#each buzzers as buzzer}
 			<div class="buzzer-row">
 				<p class="team">{ buzzer.team }</p>
 				<p class="name">{ buzzer.name }</p>
+				<p class="time">{ firstBuzzerTime && calculateTimeDifference(buzzer.timeBuzzed, firstBuzzerTime) }ms</p>
 			</div>
 		{/each}
 	</section>
@@ -79,15 +107,31 @@
 		p {
 			padding: 0.5rem;
 			font-size: 1.25rem;
+			box-sizing: border-box;
 		}
 
 		.team {
-			width: 30%
+			width: 30%;
+			border-right: 1px solid black;
 		}
 
 		.name {
-			width: 70%
+			width: 50%;
+			border-right: 1px solid black;
 		}
+
+		.time {
+			width: 20%;
+		}
+	}
+
+	.switch {
+		display: flex;
+		flex-direction: row;
+		gap: 1rem;
+		align-items: center;
+		font-size: 1.5rem;
+		margin: 1rem 0;
 	}
 
 	section {
@@ -96,8 +140,13 @@
 		
 
 		width: fit-content;
-		min-width: 32rem;
+		min-width: 42rem;
 		margin: 0 auto;
+	}
+
+
+	.placeholder {
+		height: 2.125rem;
 	}
 
 	.buzzer-table {

@@ -9,12 +9,12 @@
 <style lang="scss">
 	.toggle {
 		position: relative;
+		display: inline-block;
 		width: 70px;
 		-webkit-user-select: none;
 		-moz-user-select: none;
 		-ms-user-select: none;
 		user-select: none;
-		float: left;
 	}
 
 	.toggle-checkbox {
@@ -36,7 +36,7 @@
 		display: block;
 		width: 200%;
 		margin-left: -100%;
-		transition: margin 0.3s ease-in 0s;
+		transition: margin 0.2s ease-in 0s;
 	}
 
 	.toggle-inner:before {
@@ -97,7 +97,7 @@
 		bottom: 0;
 		right: 40px;
 		border-radius: 50px;
-		transition: all 0.3s ease-in 0s;
+		transition: all 0.2s ease-in 0s;
 	}
 
 </style>
