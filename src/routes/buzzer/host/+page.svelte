@@ -2,12 +2,12 @@
 	import { page } from "$app/stores";
 	import Switch from "$lib/components/Switch.svelte";
 	import firestore from "$lib/firebase/firebase";
-	import { collection, getDocs, onSnapshot, orderBy, query, updateDoc } from "firebase/firestore";
+	import { collection, getDocs, onSnapshot, orderBy, query, updateDoc, where } from "firebase/firestore";
 	import { onMount } from "svelte";
 
 	interface FirebaseTimeStamp {
-		seconds : number,
-		nanoseconds : number
+		seconds: number,
+		nanoseconds: number
 	} 
 
 	interface Buzzer {
@@ -16,6 +16,8 @@
 		disabled: boolean;
 		timeBuzzed: FirebaseTimeStamp
 	}
+
+	type BuzzerGroups = {[key: string]: Buzzer[]} 
 
 	function calculateTimeDifference(first: FirebaseTimeStamp, second: FirebaseTimeStamp) {
 		const secondDifference = first.seconds - second.seconds;
@@ -47,7 +49,37 @@
 		})
 	}
 
+	function onTeamToggle(teamName: string) {
+		return async (event: Event) => {
+			if (!$page.url.searchParams.has("roomCode")) {
+				return;
+			}
+			
+			const target = event.target as HTMLInputElement;
+			const isChecked = !target.checked; 
+
+			const playersRef = collection(firestore, "games", $page.url.searchParams.get("roomCode")!, "players");
+			
+			const filteredPlayers = query(playersRef, where("team", "==", teamName))
+
+			const documents = await getDocs(filteredPlayers);
+
+			documents.forEach(async document => {
+
+				const data = document.data();
+
+				await updateDoc(document.ref, {
+					disabled: isChecked,
+					timeBuzzed: isChecked ? null : data.timeBuzzed,
+				})
+			})
+		}
+	}
+
+	let teamBuzzerOn: boolean = true;
+
 	let buzzers: Buzzer[] = [];
+	let teams: BuzzerGroups = {};
 	$: firstBuzzerTime = buzzers.length ? buzzers[0].timeBuzzed : null;
 
 	onMount(() => {
@@ -59,18 +91,24 @@
 			const q = query(playerCollection, orderBy("timeBuzzed", "asc"));
 
 			onSnapshot(q, (snapshot) => {
-				buzzers = snapshot.docs
+				const data = snapshot.docs
 					.map(v => v.data())
-					.filter(data => data.timeBuzzed) as Buzzer[];
 				
-				console.log(buzzers)
+				buzzers = data.filter(data => data.timeBuzzed) as Buzzer[];
+				
+				teams = (data as Array<Buzzer>).reduce<BuzzerGroups>((groups, item) => {
+					const group = (groups[item.team] || []);
+					group.push(item);
+					groups[item.team] = group;
+					return groups;
+				}, {})
 			})
 		}
 	})
 </script>
 
-<section>
-	<p class="switch">Buzzers are currently <Switch on:input={onInput}/></p>
+<main>
+	<p class="switch">Buzzers are currently <Switch on:input={onInput} switchName="all" bind:checked={teamBuzzerOn}/></p>
 
 
 	<section class="buzzer-table">
@@ -95,7 +133,25 @@
 		{/each}
 	</section>
 
-</section>
+
+	<section class="team-display">
+		<h1>Teams</h1>
+		{#each Object.entries(teams) as team}
+			<div class="team-display__team">
+				<h2>{team[0].toUpperCase()} <Switch on:input={onTeamToggle(team[0])} switchName={team[0]} checked={teamBuzzerOn}/></h2>
+				<div class="team-display__team__players">
+					{#each team[1] as teamMember}
+						<div class="team-display__team__player">
+							Player Name: {teamMember.name}
+							Is Buzzed: {!!teamMember.timeBuzzed}
+						</div>
+					{/each}
+				</div>
+			</div>
+		{/each}
+	</section>
+
+</main>
 
 <style lang="scss">
 	@use "../../../styles/exports.scss" as exports;
@@ -134,16 +190,51 @@
 		margin: 1rem 0;
 	}
 
-	section {
+	main {
 		color: white;
 		font-family: exports.$font-sans-serif;
 		
-
 		width: fit-content;
-		min-width: 42rem;
+		min-width: 40rem;
 		margin: 0 auto;
 	}
 
+	.team-display {
+		margin-top: 3rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+
+		h1 {
+			font-size: 1.75rem;
+			font-weight: bold;
+		}
+	}
+
+	.team-display__team {
+		background-color: exports.$color-primary-400;
+		padding: 1rem 0.75rem;
+		border-radius: 5px;
+
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+
+		h2 {
+			font-weight: bold;
+			font-size: 1.25rem;
+
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+		}
+	}
+
+	.team-display__team__players {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
 
 	.placeholder {
 		height: 2.125rem;

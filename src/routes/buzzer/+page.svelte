@@ -1,10 +1,8 @@
 <script lang="ts">
-	export const ssr = false;
-
 	import { page } from "$app/stores";
 	import Buzzer from "$lib/components/Buzzer.svelte";
 	import firestore from "$lib/firebase/firebase";
-	import { doc, getDoc, onSnapshot, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+	import { doc, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore";
 	import { onMount } from "svelte";
 	type BuzzerState = "buzzed" | "unbuzzed" | "disabled";
 
