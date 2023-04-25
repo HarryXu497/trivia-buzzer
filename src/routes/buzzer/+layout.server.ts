@@ -20,8 +20,6 @@ export const load = (async ({ url }) => {
 		throw redirect(301, "/");
 	}
 
-	console.log(gameDocument.data())
-
 	return {
 		game: ({
 			id: gameDocument.id,

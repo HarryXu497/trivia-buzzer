@@ -17,8 +17,6 @@ export const actions = {
 				doc(firestore, "games", value)
 			);
 
-			console.log(value);
-
 			if (!gameDocument.exists()) {
 				gameId = value;
 				break;

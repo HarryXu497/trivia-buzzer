@@ -26,9 +26,6 @@
 		})
 	}
 
-	$: console.log("STATE: " + state)
-	
-
 	let state: BuzzerState = 'disabled';
 	let document: ReturnType<typeof doc>;
 	let showBuzzed: boolean = false;
