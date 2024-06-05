@@ -9,19 +9,18 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
 	},
-	"devDependencies": {
-		"@sveltejs/adapter-auto": "^2.0.0",
-		"@sveltejs/kit": "^1.20.4",
-		"svelte": "^4.2.17",
-		"svelte-check": "^3.4.3",
-		"tslib": "^2.4.1",
-		"typescript": "^5.0.0",
-		"vite": "^4.2.2",
-		"vitest": "^0.25.3"
-	},
 	"type": "module",
 	"dependencies": {
 		"firebase": "^9.19.1",
 		"sass": "^1.61.0"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^3.2.1",
+		"@sveltejs/kit": "^2.5.10",
+		"svelte": "^4.2.17",
+		"svelte-check": "^3.8.0",
+		"tslib": "^2.6.3",
+		"typescript": "^5.4.5",
+		"vite": "^5.2.12"
 	}
 }
