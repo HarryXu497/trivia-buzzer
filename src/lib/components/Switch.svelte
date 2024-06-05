@@ -1,6 +1,11 @@
+<script lang="ts">
+	export let switchName: string;
+	export let checked: boolean = true;
+</script>
+
 <div class="toggle"> 
-	<input type="checkbox" class="toggle-checkbox" id="mytoggle" on:input>
-	<label class="toggle-label" for="mytoggle">
+	<input type="checkbox" class="toggle-checkbox" id={`toggle_${switchName}`} on:input bind:checked={checked}>
+	<label class="toggle-label" for={`toggle_${switchName}`}>
 		<span class="toggle-inner"></span>
 		<span class="toggle-switch"></span>
 	</label>

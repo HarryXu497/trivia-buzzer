@@ -2,7 +2,7 @@
 	import { page } from "$app/stores";
 	import Buzzer from "$lib/components/Buzzer.svelte";
 	import firestore from "$lib/firebase/firebase";
-	import { doc, getDoc, onSnapshot, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+	import { doc, onSnapshot, serverTimestamp, updateDoc } from "firebase/firestore";
 	import { onMount } from "svelte";
 	type BuzzerState = "buzzed" | "unbuzzed" | "disabled";
 
@@ -25,9 +25,6 @@
 			timeBuzzed: serverTimestamp(),
 		})
 	}
-
-	$: console.log("STATE: " + state)
-	
 
 	let state: BuzzerState = 'disabled';
 	let document: ReturnType<typeof doc>;
