@@ -3,6 +3,8 @@ import type { Actions } from './$types';
 import firestore from '$lib/firebase/firebase';
 import { doc, getDoc } from 'firebase/firestore';
  
+export const ssr = false;
+
 export const actions = {
 	default: async (event) => {
 		const formData = await event.request.formData()

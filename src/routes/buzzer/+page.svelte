@@ -1,6 +1,4 @@
 <script lang="ts">
-	export const ssr = false;
-
 	import { page } from "$app/stores";
 	import Buzzer from "$lib/components/Buzzer.svelte";
 	import firestore from "$lib/firebase/firebase";

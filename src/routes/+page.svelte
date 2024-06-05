@@ -32,6 +32,7 @@
 			{errorMessage}
 		/>
 		<button class="join-button">Join Game <span>&#x21B3;</span></button>
+		<a href="/host">Or host a game instead</a>
 	</form>
 </div>
 
@@ -50,6 +51,12 @@
 		flex-direction: column;
 		gap: 0.75rem;
 		margin-bottom: 8rem;;
+	}
+
+	form a {
+		margin: 0 auto;
+		color: exports.$color-primary-100;
+		font-size: 1.05rem;
 	}
 
 	button.join-button {
