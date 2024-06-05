@@ -6,8 +6,8 @@
 </script>
 
 <section>
-	<form method="POST" use:enhance={({ data }) => {
-		data.set("game-title", gameTitle);
+	<form method="POST" use:enhance={({ formData }) => {
+		formData.set("game-title", gameTitle);
 	}}>
 		<Input
 			label="Game Title"

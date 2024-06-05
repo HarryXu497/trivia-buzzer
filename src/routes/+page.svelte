@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { ActionData } from "./$types";
 	import { enhance } from "$app/forms";
 	import Input from "$lib/components/Input.svelte";
+	import type { ActionData } from "./$types";
 
 	export let form: ActionData;
 	
@@ -18,12 +18,12 @@
 	}
 
 	let inputValue: string = "";
-
 </script>
 
 <div>
-	<form method="POST" use:enhance={({ data }) => {
-		data.set("game-code", inputValue);
+	<form method="POST" use:enhance={({ formData }) => {
+		console.log(formData)
+		formData.set("game-code", inputValue);
 	}}>
 		<Input
 			label="Game Code"
