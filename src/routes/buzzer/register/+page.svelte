@@ -24,9 +24,9 @@
 </script>
 
 <section>
-	<form method="POST" use:enhance={({ data }) => {
-		data.set("player-name", formControls.playerName);
-		data.set("team-name", formControls.teamName);
+	<form method="POST" use:enhance={({ formData }) => {
+		formData.set("player-name", formControls.playerName);
+		formData.set("team-name", formControls.teamName);
 	
 		return async ({ result }) => {
 			if (result.type === 'success') {
